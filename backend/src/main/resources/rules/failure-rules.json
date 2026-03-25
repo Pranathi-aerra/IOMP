@@ -1,0 +1,17 @@
+[
+  {
+    "pattern": "Element not found",
+    "category": "LOCATOR_FAILURE",
+    "suggestion": "Check XPath or CSS selector"
+  },
+  {
+    "pattern": "Timeout",
+    "category": "SYNC_ISSUE",
+    "suggestion": "Add explicit wait"
+  },
+  {
+    "pattern": "NoSuchElementException",
+    "category": "LOCATOR_FAILURE",
+    "suggestion": "Verify element locator"
+  }
+]

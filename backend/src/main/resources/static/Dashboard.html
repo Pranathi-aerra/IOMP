@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Test Failure Analytics</title>
+
+    <style>
+        body {
+            background: #0b0f19;
+            color: white;
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 300px;
+            padding: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #444;
+            padding: 10px;
+        }
+
+        th {
+            background: #1a1f2e;
+        }
+    </style>
+</head>
+<body>
+
+<h1>AI Test Failure Analytics</h1>
+
+<input id="url-input" placeholder="https://example.com">
+<button onclick="runTests()">Run Tests</button>
+
+<h2>History:</h2>
+<select id="history-dropdown" onchange="loadSuiteResults(this.value)">
+</select>
+
+<h2>Results (<span id="results-count">0</span>)</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Test</th>
+            <th>Status</th>
+            <th>Severity</th>
+            <th>Category</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody id="results-tbody"></tbody>
+</table>
+
+<script>
+const API = "http://localhost:8081";
+
+// ✅ normalize URL
+function normalizeUrl(url) {
+    if (!url.startsWith("http")) {
+        return "https://" + url;
+    }
+    return url;
+}
+
+// 🚀 RUN TESTS
+async function runTests() {
+    let url = document.getElementById("url-input").value.trim();
+    if (!url) return alert("Enter URL");
+
+    url = normalizeUrl(url);
+
+    console.log("Running tests for:", url);
+
+    await fetch(`${API}/api/run?url=${encodeURIComponent(url)}`);
+
+    // wait a bit then load results
+    setTimeout(() => {
+        loadSuites();
+        loadSuiteResults(url);
+    }, 2000);
+}
+
+// 📜 LOAD HISTORY
+async function loadSuites() {
+    try {
+        const res = await fetch(`${API}/api/test/suites`);
+        const data = await res.json();
+
+        const dropdown = document.getElementById("history-dropdown");
+        dropdown.innerHTML = "";
+
+        data.forEach(suite => {
+            const option = document.createElement("option");
+            option.value = suite;
+            option.textContent = suite;
+            dropdown.appendChild(option);
+        });
+
+    } catch (e) {
+        console.error("History error:", e);
+    }
+}
+
+// 📊 LOAD RESULTS (FIXED)
+async function loadSuiteResults(suite) {
+    if (!suite) return;
+
+    try {
+        console.log("Loading suite:", suite);
+
+        const res = await fetch(`${API}/api/test/suite/${encodeURIComponent(suite)}`);
+        const data = await res.json();
+
+        console.log("Loaded results:", data);
+
+        const tbody = document.getElementById("results-tbody");
+
+        if (!data || data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5">No results found</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = data.map(r => `
+            <tr>
+                <td>${r.testName}</td>
+                <td>${r.status}</td>
+                <td>${r.severity}</td>
+                <td>${r.category || '-'}</td>
+                <td>${new Date().toLocaleTimeString()}</td>
+            </tr>
+        `).join('');
+
+        document.getElementById("results-count").textContent = data.length;
+
+    } catch (e) {
+        console.error("Results error:", e);
+    }
+}
+
+// 🔄 AUTO LOAD HISTORY ON PAGE LOAD
+loadSuites();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+screenshots/
+target/
+*.log
+.cache/
+*.class
+node_modules/
+.env
