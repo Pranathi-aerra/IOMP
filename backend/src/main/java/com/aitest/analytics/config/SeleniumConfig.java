@@ -1,28 +1,13 @@
 package com.aitest.analytics.config;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 
+/**
+ * SeleniumConfig — WebDriver is now managed directly by SeleniumRunner
+ * (created once per test run, headless, and quit after all tests complete).
+ * No Spring-managed WebDriver bean is needed.
+ */
 @Configuration
 public class SeleniumConfig {
-
-    @Bean
-    @Scope("prototype") // ✅ new instance every time it's requested
-    public WebDriver webDriver() {
-
-        // ✅ Auto-manages chromedriver version
-        WebDriverManager.chromedriver().setup();
-
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--start-maximized");
-        options.addArguments("--disable-notifications");
-        // options.addArguments("--headless"); // uncomment for headless mode
-
-        return new ChromeDriver(options);
-    }
+    // Intentionally empty — driver lifecycle is handled in SeleniumRunner.runAllTestsOnUrl()
 }

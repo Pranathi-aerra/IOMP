@@ -75,7 +75,7 @@ public class TestController {
     }
 
     @GetMapping("/suite")
-    public List<TestResult> suite(@RequestParam String name) {
+    public List<TestResult> suite(@RequestParam("name") String name) {
         System.out.println(now() + " | API /suite → " + name);
         return service.getBySuite(name);
     }
