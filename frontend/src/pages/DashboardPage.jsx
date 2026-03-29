@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { getSuiteResults, analyzeFailure } from '../services/api';
+import { getSuiteResults, analyzeFailure, BACKEND_URL } from '../services/api';
 import { 
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend,
   BarChart, Bar, XAxis, YAxis, CartesianGrid 
@@ -9,7 +9,6 @@ import {
 import { ArrowLeft, ExternalLink, Activity, AlertCircle } from 'lucide-react';
 import './DashboardPage.css';
 
-const BACKEND = 'http://localhost:8081';
 const COLORS  = { PASS: '#39ff14', FAIL: '#ff006e', WARN: '#ffcc00', UNKNOWN: '#7b2fff' };
 
 function ImageModal({ src, onClose }) {
@@ -229,9 +228,9 @@ export default function DashboardPage() {
                     </div>
 
                     {r.screenshotPath && (
-                      <div className="screenshot-wrap" onClick={() => setModalSrc(`${BACKEND}/${r.screenshotPath}`)}>
+                      <div className="screenshot-wrap" onClick={() => setModalSrc(`${BACKEND_URL}/${r.screenshotPath}`)}>
                         <img 
-                          src={`${BACKEND}/${r.screenshotPath}`} 
+                          src={`${BACKEND_URL}/${r.screenshotPath}`} 
                           alt="Failure Screenshot" 
                           onError={e => { e.currentTarget.style.display = 'none'; }}
                         />

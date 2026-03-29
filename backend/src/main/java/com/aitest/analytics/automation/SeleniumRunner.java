@@ -35,7 +35,8 @@ import java.util.logging.Level;
  */
 public class SeleniumRunner {
 
-    private static final String BACKEND_URL = "http://localhost:8081";
+    private static final String PORT = System.getenv("PORT") != null ? System.getenv("PORT") : "8081";
+    private static final String BACKEND_URL = "http://localhost:" + PORT;
     private static final ThreadLocal<String> currentUserEmail = new ThreadLocal<>();
 
     private static String now() {

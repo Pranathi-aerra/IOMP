@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://ai-test-failure-analytics.onrender.com/api';
+export const BACKEND_URL = 'https://ai-test-failure-analytics.onrender.com';
+const API_BASE_URL = `${BACKEND_URL}/api`;
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
