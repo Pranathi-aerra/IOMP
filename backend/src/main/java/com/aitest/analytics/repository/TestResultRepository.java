@@ -14,6 +14,9 @@ public interface TestResultRepository extends MongoRepository<TestResult, String
     // FIX: must match the normalized lowercase testSuite stored by TestExecutionService
     List<TestResult> findByTestSuiteOrderByCreatedAtDesc(String testSuite);
 
+    List<TestResult> findByTestSuiteAndUserEmailOrderByCreatedAtDesc(String testSuite, String userEmail);
+    List<TestResult> findByUserEmailOrderByCreatedAtDesc(String userEmail);
+
     // Filters
     List<TestResult> findByStatus(String status);
     List<TestResult> findByTestName(String testName);

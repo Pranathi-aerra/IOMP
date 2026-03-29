@@ -31,6 +31,9 @@ public class TestResult {
     private String testSuite;        // normalized lowercase URL — matches what SeleniumRunner sends
 
     @Indexed
+    private String userEmail;        // User who ran the test
+
+    @Indexed
     private String severity;         // "CRITICAL" | "WARNING" | "INFO"
 
     @CreatedDate
@@ -66,6 +69,9 @@ public class TestResult {
     public String getTestSuite() { return testSuite; }
     public void setTestSuite(String testSuite) { this.testSuite = testSuite; }
 
+    public String getUserEmail() { return userEmail; }
+    public void setUserEmail(String userEmail) { this.userEmail = userEmail; }
+
     public String getSeverity() { return severity; }
     public void setSeverity(String severity) { this.severity = severity; }
 
@@ -81,6 +87,7 @@ public class TestResult {
             ", severity='" + severity + '\'' +
             ", category='" + category + '\'' +
             ", testSuite='" + testSuite + '\'' +
+            ", userEmail='" + userEmail + '\'' +
             ", createdAt=" + createdAt +
             '}';
     }

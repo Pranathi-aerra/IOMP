@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { getSuiteResults, analyzeFailure } from '../services/api';
 import { 
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend,
@@ -43,6 +44,7 @@ function NeonTooltip({ active, payload }) {
 export default function DashboardPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const selectedSuite = location.state?.selectedSuite;
 
   const [results, setResults] = useState([]);
@@ -59,7 +61,8 @@ export default function DashboardPage() {
     
     const load = async () => {
       try { 
-        setResults(await getSuiteResults(selectedSuite)); 
+        if (!user?.email) return;
+        setResults(await getSuiteResults(selectedSuite, user.email)); 
       } catch (e) {
         console.error("Error loading suite results", e);
       }

@@ -92,14 +92,21 @@ public class TestExecutionService {
 
     // ─── Fetch results for a specific URL (testSuite) ────────────────────────
     // FIX: normalize the incoming url so it matches stored lowercase values
-    public List<TestResult> getBySuite(String url) {
+    public List<TestResult> getBySuite(String url, String userEmail) {
         if (url == null || url.trim().isEmpty()) return List.of();
-        return repository.findByTestSuiteOrderByCreatedAtDesc(url.trim().toLowerCase());
+        if (userEmail == null || userEmail.trim().isEmpty()) {
+            return repository.findByTestSuiteOrderByCreatedAtDesc(url.trim().toLowerCase());
+        }
+        return repository.findByTestSuiteAndUserEmailOrderByCreatedAtDesc(url.trim().toLowerCase(), userEmail);
     }
 
     // ─── Fetch all distinct tested URLs for the history dropdown ─────────────
-    public List<String> getDistinctSuites() {
-        return mongoTemplate.findDistinct("testSuite", TestResult.class, String.class);
+    public List<String> getDistinctSuites(String userEmail) {
+        org.springframework.data.mongodb.core.query.Query query = new org.springframework.data.mongodb.core.query.Query();
+        if (userEmail != null && !userEmail.trim().isEmpty()) {
+            query.addCriteria(org.springframework.data.mongodb.core.query.Criteria.where("userEmail").is(userEmail));
+        }
+        return mongoTemplate.findDistinct(query, "testSuite", TestResult.class, String.class);
     }
 
     public List<TestResult> getByStatus(String status) {

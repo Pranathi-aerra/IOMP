@@ -9,18 +9,18 @@ const apiClient = axios.create({
   }
 });
 
-export const executeTests = async (url) => {
-  const response = await apiClient.post('/test/execute', { url });
+export const executeTests = async (url, userEmail) => {
+  const response = await apiClient.post('/test/execute', { url, userEmail });
   return response.data;
 };
 
-export const getSuites = async () => {
-  const response = await apiClient.get('/test/suites');
+export const getSuites = async (userEmail) => {
+  const response = await apiClient.get('/test/suites', { params: { userEmail } });
   return response.data;
 };
 
-export const getSuiteResults = async (suite) => {
-  const response = await apiClient.get('/test/suite', { params: { name: suite } });
+export const getSuiteResults = async (suite, userEmail) => {
+  const response = await apiClient.get('/test/suite', { params: { name: suite, userEmail } });
   return response.data;
 };
 

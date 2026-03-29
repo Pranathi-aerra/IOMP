@@ -21,9 +21,16 @@
   margin-bottom: 2.5rem;
 }
 
-.brand-glyph {
-  font-size: 28px;
+.brand-logo {
+  height: 48px;
+  width: auto;
   filter: drop-shadow(0 0 10px rgba(123, 47, 255, 0.5));
+  animation: floatLogo 3s ease-in-out infinite alternate;
+}
+
+@keyframes floatLogo {
+  0% { transform: translateY(0); filter: drop-shadow(0 0 15px rgba(123, 47, 255, 0.4)); }
+  100% { transform: translateY(-3px); filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.6)); }
 }
 
 .brand-words {

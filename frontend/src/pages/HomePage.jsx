@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { executeTests, getSuites, getSuiteResults } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import { Play, Activity, Clock, ArrowRight } from 'lucide-react';
 import './HomePage.css';
 
@@ -10,6 +11,7 @@ export default function HomePage() {
   const [latestSuite, setLatestSuite] = useState(null);
   const [results, setResults] = useState([]);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     fetchLatestSuite();
@@ -19,7 +21,8 @@ export default function HomePage() {
 
   const fetchLatestSuite = async () => {
     try {
-      const data = await getSuites();
+      if (!user?.email) return;
+      const data = await getSuites(user.email);
       if (data && data.length > 0) {
         setLatestSuite(data[0]);
       }
@@ -32,7 +35,8 @@ export default function HomePage() {
     if (!latestSuite) return;
     const fetchResults = async () => {
       try {
-        const res = await getSuiteResults(latestSuite);
+        if (!user?.email) return;
+        const res = await getSuiteResults(latestSuite, user.email);
         setResults(res);
       } catch (e) {
         console.error("Failed to fetch results", e);
@@ -49,7 +53,7 @@ export default function HomePage() {
     
     setLoading(true);
     try {
-      await executeTests(url);
+      await executeTests(url, user?.email);
       navigate('/dashboard', { state: { selectedSuite: url.trim().toLowerCase() } });
     } catch (error) {
       alert('Cannot reach backend. Is it running on :8081?');

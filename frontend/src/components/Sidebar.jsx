@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getSuites } from '../services/api';
+import logo from '../assets/logo.png';
 import { LayoutDashboard, Zap, LogOut, Clock } from 'lucide-react';
 import './Sidebar.css';
 
@@ -18,7 +19,8 @@ export default function Sidebar() {
 
   const fetchSuites = async () => {
     try {
-      const data = await getSuites();
+      if (!user?.email) return;
+      const data = await getSuites(user.email);
       setSuites(data);
     } catch (e) {
       console.error("Failed to fetch suites for sidebar", e);
@@ -33,7 +35,7 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="brand">
-        <div className="brand-glyph">🔮</div>
+        <img src={logo} alt="Scrybit Logo" className="brand-logo" />
         <div className="brand-words">
           <span className="brand-top">SCRYBIT</span>
           <span className="brand-bot">AI ANALYTICS</span>
@@ -42,16 +44,16 @@ export default function Sidebar() {
 
       <div className="sidebar-nav">
         <div className="sidebar-label">NAVIGATION</div>
-        <NavLink 
-          to="/" 
+        <NavLink
+          to="/"
           className={({ isActive }) => `nav-item ${isActive && window.location.pathname === '/' ? 'active' : ''}`}
         >
           <Zap className="nav-icon" size={18} />
           <span>New Test Run</span>
         </NavLink>
-        
-        <NavLink 
-          to="/dashboard" 
+
+        <NavLink
+          to="/dashboard"
           className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
         >
           <LayoutDashboard className="nav-icon" size={18} />
@@ -61,14 +63,14 @@ export default function Sidebar() {
         <div className="sidebar-label" style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
           <Clock size={14} /> RECENT FIXTURES
         </div>
-        
+
         <div className="history-list">
           {suites.length === 0 ? (
             <div className="history-empty">No tests run yet.</div>
           ) : (
             suites.map((s, i) => (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 className="history-nav-item"
                 onClick={() => navigate('/dashboard', { state: { selectedSuite: s } })}
               >

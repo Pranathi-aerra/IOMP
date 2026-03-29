@@ -36,6 +36,7 @@ import java.util.logging.Level;
 public class SeleniumRunner {
 
     private static final String BACKEND_URL = "http://localhost:8081";
+    private static final ThreadLocal<String> currentUserEmail = new ThreadLocal<>();
 
     private static String now() {
         return java.time.LocalDateTime.now()
@@ -44,7 +45,8 @@ public class SeleniumRunner {
     private static void log(String msg) { System.out.println(now() + " | " + msg); }
 
     // ── Entry point ────────────────────────────────────────────────────────────
-    public static void runAllTestsOnUrl(String targetUrl) {
+    public static void runAllTestsOnUrl(String targetUrl, String userEmail) {
+        currentUserEmail.set(userEmail);
         log("🚀 Starting headless test suite (25 tests) on: " + targetUrl);
         WebDriver driver = null;
         try {
@@ -85,12 +87,13 @@ public class SeleniumRunner {
             log("❌ Fatal error during test suite: " + e.getMessage());
         } finally {
             if (driver != null) { driver.quit(); log("🔒 Browser closed"); }
+            currentUserEmail.remove();
         }
     }
 
     public static void main(String[] args) {
         String url = args.length > 0 ? args[0] : "https://example.com";
-        runAllTestsOnUrl(url);
+        runAllTestsOnUrl(url, null);
     }
 
     // ── Driver factories ───────────────────────────────────────────────────────
@@ -691,6 +694,9 @@ public class SeleniumRunner {
             data.put("screenshotPath", screenshotPath);
             data.put("severity", severity);
             data.put("testSuite", targetUrl.toLowerCase());
+            if (currentUserEmail.get() != null) {
+                data.put("userEmail", currentUserEmail.get());
+            }
 
             String json = new ObjectMapper().writeValueAsString(data);
             log("📦 → " + testName + " [" + status + "]");

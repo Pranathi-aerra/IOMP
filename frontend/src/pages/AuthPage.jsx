@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Mail, Lock, ArrowRight } from 'lucide-react';
+import logo from '../assets/logo.png';
 import './AuthPage.css';
 
 export default function AuthPage() {
@@ -40,7 +41,7 @@ export default function AuthPage() {
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
-          <div className="brand-glyph">🔮</div>
+          <img src={logo} alt="Scrybit Logo" className="brand-logo" />
           <h2>{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
           <p>Scrybit AI Analytics</p>
         </div>
